@@ -1,3 +1,4 @@
+from coba.learners import ActionProb
 import coba as cb
 import torch
 from math import sqrt
@@ -68,3 +69,16 @@ class LargeActionLearner:
         if self.sampler:
             with torch.no_grad():
                 self.sampler.update(kwargs['algo'], kwargs['invpalgo'], reward)
+
+class RandomSetLearner:
+
+    def __init__(self, max_examples:int) -> None:
+        self._rng = cb.CobaRandom(1)
+        self._max_examples = max_examples
+
+    def predict(self, context, actions):
+        select_n = self._rng.randint(1,self._max_examples)
+        return ActionProb([actions[i] for i in self._rng.randints(select_n,0,len(actions)-1)], None)
+
+    def learn(self, context, actions, action, reward, probs, **kwargs):
+        pass
