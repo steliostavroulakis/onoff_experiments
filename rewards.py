@@ -1,11 +1,11 @@
-from transformers import pipeline
+from langchain.llms import OpenAI
 
 class GPT2Reward:
 
-    def __init__(self, context:str, answer:str, qa_pipeline: pipeline):
+    def __init__(self, context:str, answer:str, llm: OpenAI):
         self._context = context
         self._answer = answer
-        self._qa_pipeline = qa_pipeline
+        self._llm = llm
 
     def eval(self, action):
 
@@ -16,9 +16,11 @@ class GPT2Reward:
         prompt += self._context
 
         # Generate the response
-        response = self._qa_pipeline(prompt, max_length=250, num_return_sequences=1, temperature=0.1)
+        response = self._llm(prompt)
 
-        # Extract the generated text
-        response = response[0]['generated_text']
+        if str(self._answer) in response:
+            return 1
+        else:
+            return 0
 
-        return int(self._answer == response)
+        #return int(self._answer == response)

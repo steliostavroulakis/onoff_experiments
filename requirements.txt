@@ -4,9 +4,7 @@ matplotlib
 torch
 coba==6.2.6
 
-# Data preprocessing
-pandas
-
 # LLM based
+langchain
+openai
 transformers
-xformers
